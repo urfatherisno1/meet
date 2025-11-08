@@ -55,14 +55,17 @@ async def download_song(link: str):
                     status = str(data.get("status", "")).lower()
 
                     if status in ["done", "true", "ok"]:
-                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
+                        # FIX: SyntaxError corrected here
+                        download_url = data.get("link") or data.get("audio_url")
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
+                    
                     elif status in ["downloading", "processing", "pending"]:
-    print(f"[WAIT] API still processing {video_id}... retrying")
-    await asyncio.sleep(5)
-    continue
+                        # FIX: Indentation corrected here
+                        print(f"[WAIT] API still processing {video_id}... retrying")
+                        await asyncio.sleep(5)
+                        continue
 
                     else:
                         error_msg = data.get("error") or data.get("message") or f"Unexpected status '{status}'"
@@ -120,12 +123,14 @@ async def download_video(link: str):
                     status = str(data.get("status", "")).lower()
 
                     if status in ["done", "true", "ok"]:
-                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
+                        # FIX: SyntaxError corrected here
+                        download_url = data.get("link") or data.get("audio_url")
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
                     elif status == "downloading":
                         await asyncio.sleep(8)
+                        continue
                     else:
                         error_msg = data.get("error") or data.get("message") or f"Unexpected status '{status}'"
                         raise Exception(f"API error: {error_msg}")
@@ -546,13 +551,14 @@ class YouTubeAPI:
             x.download([link])
 
         if songvideo:
-            await download_song(link)
-            fpath = f"downloads/{link}.mp3"
-            return fpath
+            # Note: The download_song/download_video functions don't return files 
+            # with the link as the name, so the fpath is likely incorrect if 
+            # using the API. Using video_id.mp3 might be more reliable.
+            downloaded_file = await download_song(link)
+            return downloaded_file
         elif songaudio:
-            await download_song(link)
-            fpath = f"downloads/{link}.mp3"
-            return fpath
+            downloaded_file = await download_song(link)
+            return downloaded_file
         elif video:
             # Try video API first
             try:
@@ -588,16 +594,16 @@ class YouTubeAPI:
                     downloaded_file = stdout.decode().split("\n")[0]
                     direct = False
                 else:
-                   file_size = await check_file_size(link)
-                   if not file_size:
-                     print("None file Size")
-                     return None, None
-                   total_size_mb = file_size / (1024 * 1024)
-                   if total_size_mb > 250:
-                     print(f"File size {total_size_mb:.2f} MB exceeds the 100MB limit.")
-                     return None, None
-                   direct = True
-                   downloaded_file = await loop.run_in_executor(None, video_dl)
+                    file_size = await check_file_size(link)
+                    if not file_size:
+                        print("None file Size")
+                        return None, None
+                    total_size_mb = file_size / (1024 * 1024)
+                    if total_size_mb > 250:
+                        print(f"File size {total_size_mb:.2f} MB exceeds the 100MB limit.")
+                        return None, None
+                    direct = True
+                    downloaded_file = await loop.run_in_executor(None, video_dl)
         else:
             direct = True
             downloaded_file = await download_song(link)
