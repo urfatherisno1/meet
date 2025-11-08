@@ -21,6 +21,7 @@ API_URL = getenv("API_URL", "http://43.205.209.72:8000")
 API_KEY = getenv("API_KEY", "abhi_super_secret_key_change_me")
 VIDEO_API_URL = getenv("VIDEO_API_URL", "http://43.205.209.72:8000")
 
+
 def cookie_txt_file():
     cookie_dir = f"{os.getcwd()}/cookies"
     if not os.path.exists(cookie_dir):
