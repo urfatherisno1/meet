@@ -55,7 +55,7 @@ async def download_song(link: str):
                     status = str(data.get("status", "")).lower()
 
                     if status in ["done", "true", "ok"]:
-                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
+                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
@@ -120,7 +120,7 @@ async def download_video(link: str):
                     status = str(data.get("status", "")).lower()
 
                     if status in ["done", "true", "ok"]:
-                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
+                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
