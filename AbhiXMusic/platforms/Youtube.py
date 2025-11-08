@@ -55,12 +55,15 @@ async def download_song(link: str):
                     status = str(data.get("status", "")).lower()
 
                     if status in ["done", "true", "ok"]:
-                        download_url = data.get("link")
+                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
-                    elif status == "downloading":
-                        await asyncio.sleep(4)
+                    elif status in ["downloading", "processing", "pending"]:
+    print(f"[WAIT] API still processing {video_id}... retrying")
+    await asyncio.sleep(5)
+    continue
+
                     else:
                         error_msg = data.get("error") or data.get("message") or f"Unexpected status '{status}'"
                         raise Exception(f"API error: {error_msg}")
@@ -114,10 +117,10 @@ async def download_video(link: str):
                         raise Exception(f"API request failed with status code {response.status}")
 
                     data = await response.json()
-                    status = data.get("status", "").lower()
+                    status = str(data.get("status", "")).lower()
 
                     if status in ["done", "true", "ok"]:
-                        download_url = data.get("link")
+                        download_url = data.get("link") or data.get("audio_url") if not download_url:     print(f"[FAIL] API response did not provide a valid download URL for {video_id}")     return None
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
