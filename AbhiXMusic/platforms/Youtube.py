@@ -54,7 +54,7 @@ async def download_song(link: str):
                     data = await response.json()
                     status = str(data.get("status", "")).lower()
 
-                    if status == "done":
+                    if status in ["done", "true", "ok"]:
                         download_url = data.get("link")
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
@@ -116,7 +116,7 @@ async def download_video(link: str):
                     data = await response.json()
                     status = data.get("status", "").lower()
 
-                    if status == "done":
+                    if status in ["done", "true", "ok"]:
                         download_url = data.get("link")
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
