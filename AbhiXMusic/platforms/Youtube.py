@@ -17,10 +17,9 @@ import aiohttp
 import config
 from os import getenv
 
-API_URL = getenv("API_URL", "http://43.205.209.72:8000")
-API_KEY = getenv("API_KEY", "abhi_super_secret_key_change_me")
-VIDEO_API_URL = getenv("VIDEO_API_URL", "http://43.205.209.72:8000")
-
+API_URL = getenv("API_URL", 'https://api.thequickearn.xyz')
+API_KEY = getenv("API_KEY", '30DxNexGenBots470dbd')
+VIDEO_API_URL = getenv("VIDEO_API_URL", 'https://api.video.thequickearn.xyz')
 
 def cookie_txt_file():
     cookie_dir = f"{os.getcwd()}/cookies"
@@ -43,7 +42,7 @@ async def download_song(link: str):
             #print(f"File already exists: {file_path}")
             return file_path
 
-    song_url = f"{API_URL}/api/v1/youtube?query={video_id}&api_key={API_KEY}"
+    song_url = f"{API_URL}/song/{video_id}?api={API_KEY}"
     async with aiohttp.ClientSession() as session:
         for attempt in range(10):
             try:
@@ -52,21 +51,15 @@ async def download_song(link: str):
                         raise Exception(f"API request failed with status code {response.status}")
 
                     data = await response.json()
-                    status = str(data.get("status", "")).lower()
+                    status = data.get("status", "").lower()
 
-                    if status in ["done", "true", "ok"]:
-                        # FIX: SyntaxError corrected here
-                        download_url = data.get("link") or data.get("audio_url")
+                    if status == "done":
+                        download_url = data.get("link")
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
-                    
-                    elif status in ["downloading", "processing", "pending"]:
-                        # FIX: Indentation corrected here
-                        print(f"[WAIT] API still processing {video_id}... retrying")
-                        await asyncio.sleep(5)
-                        continue
-
+                    elif status == "downloading":
+                        await asyncio.sleep(4)
                     else:
                         error_msg = data.get("error") or data.get("message") or f"Unexpected status '{status}'"
                         raise Exception(f"API error: {error_msg}")
@@ -120,17 +113,15 @@ async def download_video(link: str):
                         raise Exception(f"API request failed with status code {response.status}")
 
                     data = await response.json()
-                    status = str(data.get("status", "")).lower()
+                    status = data.get("status", "").lower()
 
-                    if status in ["done", "true", "ok"]:
-                        # FIX: SyntaxError corrected here
-                        download_url = data.get("link") or data.get("audio_url")
+                    if status == "done":
+                        download_url = data.get("link")
                         if not download_url:
                             raise Exception("API response did not provide a download URL.")
                         break
                     elif status == "downloading":
                         await asyncio.sleep(8)
-                        continue
                     else:
                         error_msg = data.get("error") or data.get("message") or f"Unexpected status '{status}'"
                         raise Exception(f"API error: {error_msg}")
@@ -551,14 +542,13 @@ class YouTubeAPI:
             x.download([link])
 
         if songvideo:
-            # Note: The download_song/download_video functions don't return files 
-            # with the link as the name, so the fpath is likely incorrect if 
-            # using the API. Using video_id.mp3 might be more reliable.
-            downloaded_file = await download_song(link)
-            return downloaded_file
+            await download_song(link)
+            fpath = f"downloads/{link}.mp3"
+            return fpath
         elif songaudio:
-            downloaded_file = await download_song(link)
-            return downloaded_file
+            await download_song(link)
+            fpath = f"downloads/{link}.mp3"
+            return fpath
         elif video:
             # Try video API first
             try:
@@ -594,16 +584,16 @@ class YouTubeAPI:
                     downloaded_file = stdout.decode().split("\n")[0]
                     direct = False
                 else:
-                    file_size = await check_file_size(link)
-                    if not file_size:
-                        print("None file Size")
-                        return None, None
-                    total_size_mb = file_size / (1024 * 1024)
-                    if total_size_mb > 250:
-                        print(f"File size {total_size_mb:.2f} MB exceeds the 100MB limit.")
-                        return None, None
-                    direct = True
-                    downloaded_file = await loop.run_in_executor(None, video_dl)
+                   file_size = await check_file_size(link)
+                   if not file_size:
+                     print("None file Size")
+                     return None, None
+                   total_size_mb = file_size / (1024 * 1024)
+                   if total_size_mb > 250:
+                     print(f"File size {total_size_mb:.2f} MB exceeds the 100MB limit.")
+                     return None, None
+                   direct = True
+                   downloaded_file = await loop.run_in_executor(None, video_dl)
         else:
             direct = True
             downloaded_file = await download_song(link)
