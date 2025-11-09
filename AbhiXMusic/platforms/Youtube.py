@@ -52,7 +52,7 @@ async def download_song(link: str):
                         raise Exception(f"API request failed with status code {response.status}")
 
                     data = await response.json()
-                    status = data.get("status", "").lower()
+                    status = str(data.get("status", "")).lower()
 
                     if status == "done":
                         download_url = data.get("link")
@@ -114,7 +114,7 @@ async def download_video(link: str):
                         raise Exception(f"API request failed with status code {response.status}")
 
                     data = await response.json()
-                    status = data.get("status", "").lower()
+                    status = str(data.get("status", "")).lower()
 
                     if status == "done":
                         download_url = data.get("link")
