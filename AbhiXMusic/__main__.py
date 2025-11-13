@@ -46,7 +46,7 @@ async def init():
         pass
     await Abhi.decorators()
     LOGGER("AbhiXMusic").info(
-        "╔═════ஜ۩۞۩ஜ════╗\n  ☠︎︎𝗠𝗔𝗗𝗘 𝗕𝗬 𝗠𝗥 𝗦𝗛𝗜𝗩𝗔𝗡𝗦𝗛\n╚═════ஜ۩۞۩ஜ════╝"
+        "╔═════ஜ۩۞۩ஜ════╗\n  ☠︎︎MADE BY MR ABHI\n╚═════ஜ۩۞۩ஜ════╝"
     )
     await idle()
     await app.stop()
