@@ -17,9 +17,13 @@ import aiohttp
 import config
 from os import getenv
 
-API_URL = getenv("API_URL", 'https://api.thequickearn.xyz')
-API_KEY = getenv("API_KEY", '30DxNexGenBots470dbd')
-VIDEO_API_URL = getenv("VIDEO_API_URL", 'https://api.video.thequickearn.xyz')
+# -----------------------------
+# Use YOUR API values from config (AbhiAPI)
+# -----------------------------
+API_URL = getattr(config, 'YOUR_API_URL', getenv("YOUR_API_URL", 'http://13.233.42.136:8000'))
+API_KEY = getattr(config, 'YOUR_API_KEY', getenv("YOUR_API_KEY", 'AbhiAPI'))
+VIDEO_API_URL = f"{API_URL}/video"
+
 
 def cookie_txt_file():
     cookie_dir = f"{os.getcwd()}/cookies"
@@ -33,15 +37,21 @@ def cookie_txt_file():
 
 
 async def download_song(link: str):
+    """
+    Attempt to get a direct downloadable file using the (compatibility) /song/<id> API.
+    If the API returns a download link (status=done) this function will download and return local file path.
+    Note: AbhiAPI by default returns streaming urls (audio_url). For fast playback we prefer direct streaming, but
+    this function kept for compatibility with code paths that expect a local file.
+    """
     video_id = link.split('v=')[-1].split('&')[0]
 
     download_folder = "downloads"
     for ext in ["mp3", "m4a", "webm"]:
         file_path = f"{download_folder}/{video_id}.{ext}"
         if os.path.exists(file_path):
-            #print(f"File already exists: {file_path}")
             return file_path
 
+    # Use new API endpoint on your VPS
     song_url = f"{API_URL}/song/{video_id}?api={API_KEY}"
     async with aiohttp.ClientSession() as session:
         for attempt in range(10):
@@ -95,6 +105,7 @@ async def download_song(link: str):
             return None
     return None
 
+
 async def download_video(link: str):
     video_id = link.split('v=')[-1].split('&')[0]
 
@@ -104,7 +115,7 @@ async def download_video(link: str):
         if os.path.exists(file_path):
             return file_path
 
-    video_url = f"{VIDEO_API_URL}/video/{video_id}?api={API_KEY}"
+    video_url = f"{API_URL}/video/{video_id}?api={API_KEY}"
     async with aiohttp.ClientSession() as session:
         for attempt in range(10):
             try:
@@ -156,6 +167,7 @@ async def download_video(link: str):
             print(f"Error occurred while downloading video: {e}")
             return None
     return None
+
 
 async def check_file_size(link):
     async def get_format_info(link):
