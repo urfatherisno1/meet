@@ -20,8 +20,8 @@ from os import getenv
 # -----------------------------
 # Use YOUR API values from config (AbhiAPI)
 # -----------------------------
-API_URL = getattr(config, 'YOUR_API_URL', getenv("YOUR_API_URL", 'http://13.233.42.136:8000'))
-API_KEY = getattr(config, 'YOUR_API_KEY', getenv("YOUR_API_KEY", 'AbhiAPI'))
+API_URL = getattr(config, 'YOUR_API_URL', getenv("YOUR_API_URL", 'https://myloveisdimpi.online/download'))
+API_KEY = getattr(config, 'YOUR_API_KEY', getenv("YOUR_API_KEY", 'DIMPI-SECRET-KEY'))
 VIDEO_API_URL = f"{API_URL}/video"
 
 
