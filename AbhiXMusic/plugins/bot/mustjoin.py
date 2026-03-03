@@ -6,7 +6,7 @@ from AbhiXMusic import app
 
 #--------------------------
 
-MUST_JOIN = "ITSZAbhi"
+MUST_JOIN = "datasearching"
 #------------------------
 @app.on_message(filters.incoming & filters.private, group=-1)
 async def must_join_channel(app: Client, msg: Message):
